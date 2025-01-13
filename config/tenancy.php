@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Models\Merchant;
+use App\Models\Shop;
 use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant;
 
 return [
-    'tenant_model' => Merchant::class,
+    'tenant_model' => Shop::class,
     'id_generator' => Stancl\Tenancy\UUIDGenerator::class,
 
     'domain_model' => Domain::class,

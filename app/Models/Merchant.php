@@ -2,76 +2,22 @@
 
 namespace App\Models;
 
-use App\Models\Shop;
-use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Stancl\Tenancy\Contracts\TenantWithDatabase;
-use Stancl\Tenancy\Database\Concerns\HasDomains;
-use Stancl\Tenancy\Database\Concerns\HasDatabase;
-use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
+use Spatie\Permission\Traits\HasRoles;
 
-class Merchant extends BaseTenant implements TenantWithDatabase, Authenticatable
+class Merchant extends Authenticatable
 {
-    use HasDatabase, HasDomains, Notifiable, AuthenticatableTrait;
+    use Notifiable, HasRoles;
 
-    protected $table = 'merchants';
+    protected $guard_name = 'merchant'; // Specify the guard
+    protected $fillable = ['name', 'email', 'password', 'domain', 'data'];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'id',
-        'name',
-        'email',
-        'password',
-        'domain',
-        'data',
-    ];
+    protected $hidden = ['password'];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'data' => 'array',
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Custom columns for tenancy.
-     *
-     * @return array
-     */
-    public static function getCustomColumns(): array
-    {
-        return [
-            'id',
-            'name',
-            'email',
-            'password',
-            'domain',
-        ];
-    }
-
-    /**
-     * Relationship with shops.
-     */
     public function shops()
     {
-        return $this->hasMany(Shop::class);
+        return $this->hasMany(Shop::class, 'user_id');
     }
 }

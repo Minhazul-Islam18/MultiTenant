@@ -2,9 +2,8 @@ import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, usePage } from "@inertiajs/react";
-import GuestLayout from "@/Layouts/GuestLayout";
 
-const MerchantForm = ({ merchant }) => {
+const MerchantForm = ({ shop }) => {
     const { errors } = usePage().props;
     const {
         control,
@@ -13,36 +12,35 @@ const MerchantForm = ({ merchant }) => {
         setValue,
     } = useForm({
         defaultValues: {
-            name: merchant ? merchant.name : "",
-            email: merchant ? merchant.email : "",
-            password: "",
+            name: shop ? shop.name : "",
+            domain: shop ? shop.domain : "",
         },
     });
 
     const onSubmit = (data) => {
-        if (merchant) {
-            router.put(route("merchants.update", merchant.id), { data });
+        if (shop) {
+            router.put(route("shops.update", shop.id), { data });
         } else {
-            router.post(route("merchants.store"), data);
+            router.post(route("shops.store"), data);
         }
     };
 
     useEffect(() => {
-        if (merchant) {
-            setValue("name", merchant.name);
-            setValue("email", merchant.email);
+        if (shop) {
+            setValue("name", shop.name);
+            setValue("domain", shop.domain);
         }
-    }, [merchant, setValue]);
+    }, [shop, setValue]);
 
     return (
-        <GuestLayout>
-            <Head title={merchant ? "Edit Merchant" : "Create Merchant"} />
+        <AuthenticatedLayout>
+            <Head title={shop ? "Edit Shop" : "Create Shop"} />
 
             <div className="px-2 py-4">
                 <div className="max-w-4xl mx-auto">
-                    <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg">
+                    <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg border border-red-500 px-4 py-7">
                         <h1 className="text-2xl font-bold text-gray-800 mb-6 dark:text-white">
-                            {merchant ? "Edit Merchant" : "Create Merchant"}
+                            {shop ? "Edit Shop" : "Create Shop"}
                         </h1>
 
                         <form
@@ -87,74 +85,35 @@ const MerchantForm = ({ merchant }) => {
 
                             <div>
                                 <label
-                                    htmlFor="email"
+                                    htmlFor="domain"
                                     className="block text-sm font-medium text-gray-700 dark:text-white"
                                 >
-                                    Email
+                                    Domain
                                 </label>
                                 <Controller
-                                    name="email"
+                                    name="domain"
                                     control={control}
                                     rules={{
-                                        required: "Email is required",
+                                        required: "Domain is required",
                                         pattern: {
-                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                            message:
-                                                "Enter a valid email address",
+                                            value: /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/,
+                                            message: "Enter a valid domain",
                                         },
                                     }}
                                     render={({ field }) => (
                                         <input
-                                            type="email"
-                                            id="email"
+                                            type="text"
+                                            id="domain"
                                             {...field}
                                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         />
                                     )}
                                 />
-                                {errors.email ||
-                                    (formErrors.email && (
+                                {errors.domain ||
+                                    (formErrors.domain && (
                                         <p className="mt-1 text-sm text-red-500">
-                                            {errors.email ||
-                                                formErrors.email.message}
-                                        </p>
-                                    ))}
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor="password"
-                                    className="block text-sm font-medium text-gray-700 dark:text-white"
-                                >
-                                    Password
-                                </label>
-                                <Controller
-                                    name="password"
-                                    control={control}
-                                    rules={{
-                                        required: merchant
-                                            ? false
-                                            : "Password is required",
-                                        minLength: {
-                                            value: 8,
-                                            message:
-                                                "Password must be at least 8 characters",
-                                        },
-                                    }}
-                                    render={({ field }) => (
-                                        <input
-                                            type="password"
-                                            id="password"
-                                            {...field}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                    )}
-                                />
-                                {errors.password ||
-                                    (formErrors.password && (
-                                        <p className="mt-1 text-sm text-red-500">
-                                            {errors.password ||
-                                                formErrors.password.message}
+                                            {errors.domain ||
+                                                formErrors.domain.message}
                                         </p>
                                     ))}
                             </div>
@@ -165,16 +124,14 @@ const MerchantForm = ({ merchant }) => {
                                     disabled={isSubmitting}
                                     className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 >
-                                    {merchant
-                                        ? "Update Merchant"
-                                        : "Create Merchant"}
+                                    {shop ? "Update Shop" : "Create Shop"}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-        </GuestLayout>
+        </AuthenticatedLayout>
     );
 };
 

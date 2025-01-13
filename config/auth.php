@@ -68,9 +68,20 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' =>  App\Models\User::class,
+
+        ],
         'merchants' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Merchant::class,
+            'model' =>  App\Models\Merchant::class,
+
+        ],
+        'shops' => [
+            'driver' => 'eloquent',
+            'model' =>  App\Models\Shop::class,
+
         ],
         // 'users' => [
         //     'driver' => 'database',

@@ -32,22 +32,14 @@ class MerchantController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:merchants,email',
             'password' => 'required|string|min:8',
-            'domain' => 'required|string|unique:merchants,domain',
         ]);
 
-        $tenant = Merchant::create([
-            // 'id' => Str::uuid(),
+        $merchant = Merchant::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'domain' => $request->domain,
-            'data' => $request->data,
         ]);
-
-        $tenant->domains()->create([
-            'domain' => $request->domain,
-        ]);
-
+        $merchant->assignRole('merchant');
         return redirect()->route('merchant-login')->with('success', 'Merchant created successfully, Please login.');
     }
 
@@ -58,7 +50,6 @@ class MerchantController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:merchants,email,' . $merchant->id, // Unique email but ignore the current merchant
             'password' => 'nullable|string|min:8', // Password is optional for update
-            'domain' => 'required|string|unique:merchants,domain,' . $merchant->id, // Unique domain but ignore the current merchant
         ]);
 
         // Update existing merchant
@@ -66,7 +57,6 @@ class MerchantController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password ? bcrypt($request->password) : $merchant->password,
-            'domain' => $request->domain,
         ]);
 
         return redirect()->route('merchants.index')->with('success', 'Merchant updated successfully.');

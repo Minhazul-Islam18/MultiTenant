@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\MerchantController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('merchant-register', [MerchantController::class, 'create'])
@@ -17,6 +18,11 @@ Route::get('merchant-register', [MerchantController::class, 'create'])
 
 Route::post('merchants/store', [MerchantController::class, 'store'])
     ->name('merchants.store');
+
+Route::middleware('auth:merchant')->group(function () {
+    Route::resource('shops', ShopController::class);
+});
+Route::get('shops-api', [ShopController::class, 'apiShops'])->name('merchant.shops.api');
 
 Route::middleware('guest')->group(function () {
 
@@ -49,7 +55,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware(['auth', 'auth:merchant'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::resource('merchants', MerchantController::class)->except(['create', 'store']);
 
     Route::get('verify-email', EmailVerificationPromptController::class)
