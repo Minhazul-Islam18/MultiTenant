@@ -45,14 +45,12 @@ class MerchantController extends Controller
 
     public function update(Request $request, Merchant $merchant)
     {
-        // Validation for merchant update
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:merchants,email,' . $merchant->id, // Unique email but ignore the current merchant
-            'password' => 'nullable|string|min:8', // Password is optional for update
+            'email' => 'required|email|unique:merchants,email,' . $merchant->id,
+            'password' => 'nullable|string|min:8',
         ]);
 
-        // Update existing merchant
         $merchant->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -64,7 +62,6 @@ class MerchantController extends Controller
 
     public function destroy(Merchant $merchant)
     {
-        // Deleting merchant (you can also delete tenant-specific data if needed)
         $merchant->delete();
         return redirect()->route('merchants.index')->with('success', 'Merchant deleted successfully.');
     }

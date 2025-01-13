@@ -11,8 +11,8 @@ export default function Index() {
     const fetchShops = async () => {
         try {
             const response = await axios.get(route("tenant.products.api"));
-            console.log(response.data); // Update state with API data
-            setProducts(response.data.data); // Update state with API data
+            console.log(response.data);
+            setProducts(response.data.data);
         } catch (error) {
             console.error("Error fetching shops:", error);
         }
@@ -78,20 +78,10 @@ export default function Index() {
                                                 {merchant.price}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                                <Link
-                                                    href={route(
-                                                        "merchants.show",
-                                                        merchant.id
-                                                    )}
-                                                    className="text-blue-600 dark:text-blue-400 hover:underline mr-3"
-                                                >
+                                                <Link className="text-blue-600 dark:text-blue-400 hover:underline mr-3">
                                                     View
                                                 </Link>
                                                 <Link
-                                                    href={route(
-                                                        "merchants.destroy",
-                                                        merchant.id
-                                                    )}
                                                     method="delete"
                                                     as="button"
                                                     className="text-red-600 dark:text-red-400 hover:underline"

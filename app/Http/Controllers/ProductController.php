@@ -15,7 +15,6 @@ class ProductController extends Controller
 
     public function products()
     {
-        // Fetch products for the current tenant
         $products = Product::where('tenant_id', tenant('id'))->get();
 
         return response()->json([

@@ -1,6 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, usePage } from "@inertiajs/react";
 import GuestLayout from "@/Layouts/GuestLayout";
 

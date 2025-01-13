@@ -54,13 +54,11 @@ class ShopController extends Controller
 
     public function update(Request $request, Shop $shop)
     {
-        // Validation for shop update
         $request->validate([
             'name' => 'required|string|max:255',
-            'domain' => 'required|string|unique:shops,domain,' . $shop->id, // Unique domain but ignore the current shop
+            'domain' => 'required|string|unique:shops,domain,' . $shop->id,
         ]);
 
-        // Update existing shop
         $shop->update([
             'name' => $request->name,
             'domain' => $request->domain,
@@ -71,7 +69,6 @@ class ShopController extends Controller
 
     public function destroy(Shop $shop)
     {
-        // Deleting shop (you can also delete tenant-specific data if needed)
         $shop->delete();
         return redirect()->route('shops.index')->with('success', 'Shop deleted successfully.');
     }
@@ -84,30 +81,29 @@ class ShopController extends Controller
             if (!$user) {
                 return response()->json([
                     'message' => 'Unauthorized access.',
-                ], 401); // Unauthorized status code
+                ], 401);
             }
 
-            $shops = $user->shops()->get(); // Retrieve all shops associated with the user
+            $shops = $user->shops()->get();
 
             if ($shops->isEmpty()) {
                 return response()->json([
                     'message' => 'No shops found.',
                     'data' => [],
-                ], 404); // Not Found status code
+                ], 404);
             }
 
             return response()->json([
                 'message' => 'Shops retrieved successfully.',
                 'data' => $shops,
-            ], 200); // Success status code
+            ], 200);
         } catch (\Exception $e) {
-            // Log the exception for debugging purposes
-            \Log::error('Error in Shop API: ' . $e->getMessage());
+            Log::error('Error in Shop API: ' . $e->getMessage());
 
             return response()->json([
                 'message' => 'An error occurred while retrieving shops.',
                 'error' => $e->getMessage(),
-            ], 500); // Internal Server Error status code
+            ], 500);
         }
     }
 }
