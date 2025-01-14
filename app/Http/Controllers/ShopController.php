@@ -112,13 +112,11 @@ class ShopController extends Controller
     {
         dd('asfsaf');
         try {
-            // Ensure the tenant context is loaded
             if (!tenant()) {
                 return response()->json([
                     'message' => 'No tenant context found. Ensure you are within a tenant.',
                 ], 400);
             }
-            // Fetch products with category (tenant-aware)
             $products = Product::with(['category:id,name', 'shop'])
                 ->get();
 
