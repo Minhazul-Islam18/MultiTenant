@@ -8,9 +8,13 @@ class Product extends Model
 {
     protected $fillable = ['name', 'description', 'price', 'tenant_id'];
 
-    // Optional: Add a tenant relationship
     public function shop()
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Shop::class, 'tenant_id', 'id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

@@ -11,7 +11,7 @@ class Merchant extends Authenticatable
 {
     use Notifiable, HasRoles;
 
-    protected $guard_name = 'merchant'; // Specify the guard
+    protected $guard_name = 'merchant';
     protected $fillable = ['name', 'email', 'password', 'domain', 'data'];
 
     protected $hidden = ['password'];

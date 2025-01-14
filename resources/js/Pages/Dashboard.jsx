@@ -7,9 +7,11 @@ import axios from "axios";
 export default function Dashboard() {
     const { auth } = usePage().props;
     const [shops, setShops] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         if (hasAnyRole(auth.user, "merchant")) {
+            allProducts();
             fetchShops();
         }
     }, [auth.user]);
@@ -18,6 +20,15 @@ export default function Dashboard() {
         try {
             const response = await axios.get(route("merchant.shops.api"));
             setShops(response.data.data); // Update state with API data
+        } catch (error) {
+            console.error("Error fetching shops:", error);
+        }
+    };
+
+    const allProducts = async () => {
+        try {
+            const response = await axios.get(route("merchants.all-products"));
+            setProducts(response.data.data); // Update state with API data
         } catch (error) {
             console.error("Error fetching shops:", error);
         }
@@ -46,6 +57,9 @@ export default function Dashboard() {
                                         Add Shop
                                     </Link>
                                     <div className="mt-6">
+                                        <h2 className=" text-3xl fw-bold block mt-8 mb-0 text-center">
+                                            Shops
+                                        </h2>
                                         <table className="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
                                             <thead>
                                                 <tr className="bg-gray-200 dark:bg-gray-700">
@@ -105,6 +119,107 @@ export default function Dashboard() {
                                                             </td>
                                                         </tr>
                                                     ))
+                                                ) : (
+                                                    <tr>
+                                                        <td
+                                                            className="border px-4 py-2 text-center"
+                                                            colSpan="3"
+                                                        >
+                                                            No shops found.
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div className="mt-6">
+                                        <h2 className=" text-3xl fw-bold block mt-8 mb-0 text-center">
+                                            Products
+                                        </h2>
+                                        <table className="min-w-full table-auto border-collapse border border-gray-300 dark:border-gray-700">
+                                            <thead>
+                                                <tr className="bg-gray-200 dark:bg-gray-700">
+                                                    <th className="border px-4 py-2">
+                                                        #
+                                                    </th>
+                                                    <th className="border px-4 py-2">
+                                                        Name
+                                                    </th>
+                                                    <th className="border px-4 py-2">
+                                                        Shop
+                                                    </th>
+                                                    <th className="border px-4 py-2">
+                                                        Category
+                                                    </th>
+                                                    <th className="border px-4 py-2">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {products.length > 0 ? (
+                                                    products.map(
+                                                        (product, index) => (
+                                                            <tr
+                                                                key={product.id}
+                                                                className="text-center"
+                                                            >
+                                                                <td className="border px-4 py-2">
+                                                                    {index + 1}
+                                                                </td>
+                                                                <td className="border px-4 py-2">
+                                                                    {
+                                                                        product.name
+                                                                    }
+                                                                </td>
+                                                                <td className="border px-4 py-2">
+                                                                    {
+                                                                        product
+                                                                            ?.shop
+                                                                            ?.name
+                                                                    }
+                                                                </td>
+                                                                <td className="border px-4 py-2">
+                                                                    {
+                                                                        product
+                                                                            ?.category
+                                                                            ?.name
+                                                                    }
+                                                                </td>
+                                                                <td className="border px-4 py-2">
+                                                                    <Link
+                                                                        href={route(
+                                                                            "shops.edit",
+                                                                            product.id
+                                                                        )}
+                                                                        className="px-2 py-1 rounded bg-yellow-500 text-white mr-2"
+                                                                    >
+                                                                        Edit
+                                                                    </Link>
+                                                                    <Link
+                                                                        href={route(
+                                                                            "shops.show",
+                                                                            product.id
+                                                                        )}
+                                                                        className="px-2 py-1 rounded bg-yellow-500 text-white mr-2"
+                                                                    >
+                                                                        Show
+                                                                    </Link>
+                                                                    <button
+                                                                        className="px-2 py-1 rounded bg-red-500 text-white"
+                                                                        onClick={() =>
+                                                                            console.log(
+                                                                                `Delete product: ${product.id}`
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Delete
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )
                                                 ) : (
                                                     <tr>
                                                         <td

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Merchant;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Shop;
 use Illuminate\Support\Facades\Hash;
 
 class MerchantController extends Controller
@@ -64,5 +67,40 @@ class MerchantController extends Controller
     {
         $merchant->delete();
         return redirect()->route('merchants.index')->with('success', 'Merchant deleted successfully.');
+    }
+
+    public function getAllProducts()
+    {
+        try {
+            // Retrieve all tenants
+            $tenants = Shop::all();
+            $allProducts = [];
+
+            foreach ($tenants as $tenant) {
+                // Use the tenant's database connection
+                tenancy()->initialize($tenant);
+
+                // Fetch products from this tenant's database
+                $products = Product::with(['category:id,name', 'shop'])
+                    ->get();
+
+                $allProducts = array_merge($allProducts, $products->toArray());
+
+                // End tenant context to avoid conflicts
+                tenancy()->end();
+            }
+
+            return response()->json([
+                'message' => 'Products retrieved successfully from all tenants.',
+                'data' => $allProducts,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error retrieving products from all tenants: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'An error occurred while retrieving products.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

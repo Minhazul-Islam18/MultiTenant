@@ -31,4 +31,5 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::delete('/merchants/{merchant}', [MerchantController::class, 'destroy'])->name('merchants.destroy');
 });
 
+Route::get('/getAllProducts', [MerchantController::class, 'getAllProducts'])->name('merchants.all-products');
 require __DIR__ . '/auth.php';
